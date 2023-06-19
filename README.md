@@ -7,3 +7,5 @@ islam v1.0.0 rust library used to calculate pray timer. I didn't add it using ca
 
 all code beside main.rs for tauri-rust source is copy paste from islam 1.0.0.
 all credit goes to @azzamsa. 
+
+https://github.com/azzamsa/islam
