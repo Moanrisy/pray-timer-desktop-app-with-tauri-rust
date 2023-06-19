@@ -79,22 +79,12 @@ fn example() -> Result<AppData, Box<dyn std::error::Error>> {
     let time = time.format(&format).unwrap();
 
     let app_data = AppData {
-        fajr: format!("{}:{}:{}", fajr.hour(), fajr.minute(), fajr.second()),
-        sherook: format!(
-            "{}:{}:{}",
-            sherook.hour(),
-            sherook.minute(),
-            sherook.second()
-        ),
-        dohr: format!("{}:{}:{}", dohr.hour(), dohr.minute(), dohr.second()),
-        asr: format!("{}:{}:{}", asr.hour(), asr.minute(), asr.second()),
-        maghreb: format!(
-            "{}:{}:{}",
-            maghreb.hour(),
-            maghreb.minute(),
-            maghreb.second()
-        ),
-        ishaa: format!("{}:{}:{}", ishaa.hour(), ishaa.minute(), ishaa.second()),
+        fajr: format!("{}:{}  ", fajr.hour(), fajr.minute()),
+        sherook: format!("{}:{}  ", sherook.hour(), sherook.minute()),
+        dohr: format!("{}:{}", dohr.hour(), dohr.minute()),
+        asr: format!("{}:{}", asr.hour(), asr.minute()),
+        maghreb: format!("{}:{}", maghreb.hour(), maghreb.minute()),
+        ishaa: format!("{}:{}", ishaa.hour(), ishaa.minute()),
         current_prayer: format!(
             "{}: ({}:{})",
             current_prayer.name(today_date)?,
