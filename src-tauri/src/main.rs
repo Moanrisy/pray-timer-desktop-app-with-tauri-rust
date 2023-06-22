@@ -1,11 +1,8 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use chrono::{Datelike, Local, Timelike};
-use hello_tauri::pray::{Config, Location, Madhab, Method, PrayerSchedule};
-use time::macros::offset;
-use time::Month;
-use time::{format_description, Date};
+use chrono::{Local, Timelike};
+use islam::salah::{Config, Location, Madhab, Method, PrayerSchedule};
 
 struct AppData {
     fajr: String,
@@ -18,49 +15,14 @@ struct AppData {
     next_prayer: String,
 }
 
-fn convert_to_month_name(month: u32) -> Option<Month> {
-    match month {
-        1 => Some(Month::January),
-        2 => Some(Month::February),
-        3 => Some(Month::March),
-        4 => Some(Month::April),
-        5 => Some(Month::May),
-        6 => Some(Month::June),
-        7 => Some(Month::July),
-        8 => Some(Month::August),
-        9 => Some(Month::September),
-        10 => Some(Month::October),
-        11 => Some(Month::November),
-        12 => Some(Month::December),
-        _ => None,
-    }
-}
-
 fn example() -> Result<AppData, Box<dyn std::error::Error>> {
-    let current_date = Local::now();
-    let year = current_date.year();
-    let month = current_date.month();
-    let day = current_date.day();
-    let today_date =
-        Date::from_calendar_date(year, convert_to_month_name(month).unwrap(), day as u8)
-            .expect("Failed to create fallback date");
-
-    let current_time = Local::now().time();
-    let time_now = today_date
-        .with_hms(
-            current_time.hour() as u8,
-            current_time.minute() as u8,
-            current_time.second() as u8,
-        )?
-        .assume_offset(offset!(+7:00:00));
-
     // https://www.mapcoordinates.net/en
     let cluring_city = Location::new(-8.4330044, 114.1995126);
     let config = Config::new().with(Method::Karachi, Madhab::Shafi);
 
-    let prayer_schedule = PrayerSchedule::new(cluring_city, today_date)?;
+    let prayer_schedule = PrayerSchedule::new(cluring_city)?;
     let prayer_times = prayer_schedule
-        .on(today_date)
+        .on(Local::now().date_naive())
         .with_config(config)
         .calculate()?;
 
@@ -71,12 +33,12 @@ fn example() -> Result<AppData, Box<dyn std::error::Error>> {
     let maghreb = prayer_times.maghreb;
     let ishaa = prayer_times.ishaa;
 
-    let (hour, minute) = prayer_times.time_remaining(time_now)?;
-    let current_prayer = prayer_times.current(time_now)?;
-    let next_prayer = prayer_times.next(time_now)?;
+    let current_prayer = prayer_times.current()?;
+    let (hour, minute) = prayer_times.time_remaining()?;
+
+    let next_prayer = prayer_times.next()?;
     let time = prayer_times.time(next_prayer);
-    let format = format_description::parse("[hour]:[minute]").unwrap();
-    let time = time.format(&format).unwrap();
+    let time = time.format("%H:%M").to_string();
 
     let app_data = AppData {
         fajr: format!("{}:{}  ", fajr.hour(), fajr.minute()),
@@ -85,13 +47,8 @@ fn example() -> Result<AppData, Box<dyn std::error::Error>> {
         asr: format!("{}:{}", asr.hour(), asr.minute()),
         maghreb: format!("{}:{}", maghreb.hour(), maghreb.minute()),
         ishaa: format!("{}:{}", ishaa.hour(), ishaa.minute()),
-        current_prayer: format!(
-            "{}: ({}:{})",
-            current_prayer.name(today_date)?,
-            hour,
-            minute
-        ),
-        next_prayer: format!("{}: ({})", next_prayer.name(today_date)?, time),
+        current_prayer: format!("{}: ({}:{})", current_prayer.name()?, hour, minute),
+        next_prayer: format!("{}: ({})", next_prayer.name()?, time),
     };
 
     Ok(app_data)
