@@ -17,10 +17,10 @@ struct AppData {
 
 fn example() -> Result<AppData, Box<dyn std::error::Error>> {
     // https://www.mapcoordinates.net/en
-    let cluring_city = Location::new(-8.4330044, 114.1995126);
+    let malang_city = Location::new(-7.9771206, 112.6340291);
     let config = Config::new().with(Method::Karachi, Madhab::Shafi);
 
-    let prayer_schedule = PrayerSchedule::new(cluring_city)?;
+    let prayer_schedule = PrayerSchedule::new(malang_city)?;
     let prayer_times = prayer_schedule
         .on(Local::now().date_naive())
         .with_config(config)

@@ -1272,8 +1272,7 @@ dependencies = [
 [[package]]
 name = "islam"
 version = "2.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "01a3bfacaf92a15dbc6f75d9ac60f0f5b08f9ba8cbfdb437cc667ecb5d53ea7d"
+source = "git+https://github.com/moanrisy/islam.git#c6469c3bf012b0f6e135d658cba422bbb2f870f9"
 dependencies = [
  "chrono",
  "thiserror",
